@@ -165,8 +165,73 @@ void updateUser(){
 
 }
 
+//Delete user
+//The whole code is same as updateUser just one change is there
 
+void deleteUser(){
+    FILE *file;
+    FILE *temp;
 
+    int id;
+    bool found  = false;
+
+    printf("Enter the ID to update the record\n");
+    scanf("%d",&id);
+
+    // ID must exist
+    if(!idExists(id)){
+        printf("Error. ID does not exist.\n");
+        return;
+    }
+
+    file = fopen(FILE_NAME,"r");
+
+    if(file==NULL){
+        printf("Error. Couldn't open file");
+        return;
+    }
+
+    temp = (TEMP_FILE,"w");
+
+    if(temp==NULL){
+        printf("Error. Couldn't create temporary file");
+        fclose(file);
+        return;
+    }
+
+    while (fscanf(file, "%d %49s %d",
+                  &user.id,
+                  user.name,
+                  &user.age) == 3)
+    {
+        // IF found don't write the record into the new temp file
+        if (user.id == id)
+        {
+            found = true; 
+            continue;  
+        }
+
+        // Write all the other users
+        
+        fprintf(temp, "%d %s %d\n",
+                user.id,
+                user.name,
+                user.age);
+    }
+
+    fclose(file);
+    fclose(temp);
+
+    // Replace the old file with the updated temporary file.
+    remove(FILE_NAME);
+    rename(TEMP_FILE, FILE_NAME);
+
+    if (found)
+    {
+        printf("User deleted successfully.\n");
+    }
+
+}
 
 int main(){
     int choice;
@@ -186,17 +251,17 @@ int main(){
             createUser();
             break;
         
-        // case 2:
-        //     readUsers();
-        //     break;
+        case 2:
+            readUsers();
+            break;
 
-        // case 3:
-        //     updateUser();
-        //     break;
+        case 3:
+            updateUser();
+            break;
 
-        // case 4:
-        //     deleteUser();
-        //     break;
+        case 4:
+            deleteUser();
+            break;
 
         case 5:
             printf("Exiting....");
