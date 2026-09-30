@@ -7,6 +7,12 @@
 
 // checking if the record already exists in the file or not
 //i.e if the id is unique or not
+struct User
+{
+    int id;
+    char name[50];
+    int age;
+}user;
 
 bool idExists(int id){
     FILE *file;
@@ -64,12 +70,101 @@ void createUser(){
 
 }
 
-struct User
-{
+
+//Reading the users
+void readUsers(){
+    FILE *file;
+    file= fopen(FILE_NAME,"r");
+
+    // If file is not present obviously no records can be read
+    if(file==NULL){
+        printf("Error. Couldn't locate file");
+        return;
+    }
+    
+    printf("Error. Couldn't locate file");
+    // scanf and fscanf returns the number of variables it has read in the form of integer
+    while (fscanf(file,"%d %49s %d",
+        &user.id,
+        user.name
+        ,&user.age)==3)
+    {
+        printf("ID:%d   |   NAME:%s    |    AGE:%d\n",&user.id, user.name, &user.age);
+    }
+    
+    fclose(file);
+}
+
+// update the record based on id
+void updateUser(){
+    FILE *file;
+    FILE *temp;
+
     int id;
-    char name[50];
-    int age;
-}user;
+    bool found  = false;
+
+    printf("Enter the ID to update the record\n");
+    scanf("%d",&id);
+
+    // ID must exist
+    if(!idExists(id)){
+        printf("Error. ID does not exist.\n");
+        return;
+    }
+
+    file = fopen(FILE_NAME,"r");
+
+    if(file==NULL){
+        printf("Error. Couldn't open file");
+        return;
+    }
+
+    temp = (TEMP_FILE,"w");
+
+    if(temp==NULL){
+        printf("Error. Couldn't create temporary file");
+        fclose(file);
+        return;
+    }
+
+    while (fscanf(file, "%d %49s %d",
+                  &user.id,
+                  user.name,
+                  &user.age) == 3)
+    {
+        if (user.id == id)
+        {
+            printf("Enter new Name: ");
+            scanf("%49s", user.name);
+
+            printf("Enter new Age: ");
+            scanf("%d", &user.age);
+
+            found = true;   
+        }
+
+        // Write the record to temporary file. If it was the selected user, the updated    information is written.
+        
+        fprintf(temp, "%d %s %d\n",
+                user.id,
+                user.name,
+                user.age);
+    }
+
+    fclose(file);
+    fclose(temp);
+
+    // Replace the old file with the updated temporary file.
+    remove(FILE_NAME);
+    rename(TEMP_FILE, FILE_NAME);
+
+    if (found)
+    {
+        printf("User updated successfully.\n");
+    }
+
+}
+
 
 
 
@@ -91,17 +186,17 @@ int main(){
             createUser();
             break;
         
-        case 2:
-            readUsers();
-            break;
+        // case 2:
+        //     readUsers();
+        //     break;
 
-        case 3:
-            updateUser();
-            break;
+        // case 3:
+        //     updateUser();
+        //     break;
 
-        case 4:
-            deleteUser();
-            break;
+        // case 4:
+        //     deleteUser();
+        //     break;
 
         case 5:
             printf("Exiting....");
