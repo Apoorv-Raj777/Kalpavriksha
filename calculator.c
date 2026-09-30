@@ -107,5 +107,37 @@ int main(){
 
             continue;
         }
+
+        //Reading an operator
+        if(isOperator(expression[i])){
+
+            if(expectingNumber){
+                printf("Error, Invaild Expression\n");
+                return 1;
+            }
+
+            operation = expression[i];  // Storing the the previous expression
+            expectingNumber =1;
+            i++;
+            continue;
+        }
+
+        // Apart from number, operators and whitespaces all are invalid
+        printf("Error, Invaild Expression\n");
+        return 1;
     }
+
+    // Expression cannot end with an operator and atleast one number should be entered
+    if(!foundNumber || expectingNumber){
+        printf("Error, Invaild Expression\n");
+        return 1;
+    }
+
+    // Adding the final term
+
+    result += currentTerm;
+
+    printf("%d\n",result);
+
+    return 0;
 }
