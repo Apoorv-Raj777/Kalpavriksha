@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include<stdbool.h>
+#include <stdbool.h>
 
 #define FILE_NAME "users.txt"
 #define TEMP_FILE "temp.txt"
@@ -20,21 +20,23 @@ bool idExists(int id){
     
     // File doesn't exist i.e. id also doesn't exist
     if(file == NULL){
-        return  false;
+        return false;
     }
-    while(fscanf(file,"%d %49S %d", 
+
+    while(fscanf(file,"%d %49s %d", 
         &user.id,
         user.name,
         &user.age)==3)
-        {
-            if(user.id==id){
-                fclose(file);
-                return true;
-            }
+    {
+        if(user.id==id){
+            fclose(file);
+            return true;
         }
-        fclose(file);
+    }
 
-        return false;
+    fclose(file);
+
+    return false;
 }
 
 //creating user
@@ -43,14 +45,16 @@ void createUser(){
     
     printf("\nEnter the user id: ");
     scanf("%d",&user.id);
+
     if(idExists(user.id)){
         printf("Error: ID already exists\n");
         return;
     }
-    printf("\nEnter the user Name: ");
-    scanf("%s",user.name);
 
-    printf("\nEnter the user id: ");
+    printf("\nEnter the user Name: ");
+    scanf("%49s",user.name);
+
+    printf("\nEnter the user Age: ");
     scanf("%d",&user.age);
 
     // "a" = appends...It adds to the file or create a new file if the file doesn't exist
@@ -60,7 +64,8 @@ void createUser(){
         printf("Error. Couldn't open file");
         return;
     }
-    fprintf(file,"%d %S %d\n", 
+
+    fprintf(file,"%d %s %d\n", 
         user.id,
         user.name,
         user.age);
@@ -82,14 +87,14 @@ void readUsers(){
         return;
     }
     
-    printf("Error. Couldn't locate file");
     // scanf and fscanf returns the number of variables it has read in the form of integer
     while (fscanf(file,"%d %49s %d",
         &user.id,
-        user.name
-        ,&user.age)==3)
+        user.name,
+        &user.age)==3)
     {
-        printf("ID:%d   |   NAME:%s    |    AGE:%d\n",&user.id, user.name, &user.age);
+        printf("ID:%d   |   NAME:%s    |    AGE:%d\n",
+               user.id, user.name, user.age);
     }
     
     fclose(file);
@@ -119,7 +124,7 @@ void updateUser(){
         return;
     }
 
-    temp = (TEMP_FILE,"w");
+    temp = fopen(TEMP_FILE,"w");
 
     if(temp==NULL){
         printf("Error. Couldn't create temporary file");
@@ -191,7 +196,7 @@ void deleteUser(){
         return;
     }
 
-    temp = (TEMP_FILE,"w");
+    temp = fopen(TEMP_FILE,"w");
 
     if(temp==NULL){
         printf("Error. Couldn't create temporary file");
