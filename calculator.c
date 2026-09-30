@@ -14,7 +14,7 @@ bool isOperator(char c){
 }
 
 bool isSpace(char c){
-    if(c==' ' || c == '\t' || c=='\n' || c =='\r');
+    if(c==' ' || c == '\t' || c=='\n' || c =='\r')
       return true;
     return false;
 }
@@ -35,6 +35,8 @@ int main(){
     int foundNumber =0;
     
     char expression[MAX_EXPRESSION_LEN];
+
+    printf("Enter the expression.\n");
     if(fgets(expression, MAX_EXPRESSION_LEN,stdin) == NULL){
         printf("Invalid, Could not read Expression.\n");
         return 1;
