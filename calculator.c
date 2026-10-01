@@ -3,20 +3,20 @@
 
 #define MAX_EXPRESSION_LENGTH 1000
 
-bool isDigit(char c){
+bool isDigitCharacter(char c){
     if(c>='0' && c<='9')
         return true;
     return false;
 }
 
-bool isOperator(char c){
+bool isOperatorCharacter(char c){
     if(c=='/' || c=='*'|| c=='+'|| c=='-')
        return true;
 
     return false;
 }
 
-bool isWhitespace(char c){
+bool isWhitespaceCharacter(char c){
     if(c==' ' || c == '\t' || c=='\n' || c =='\r')
       return true;
     return false;
@@ -26,7 +26,7 @@ int main(){
 
     int index = 0;
     long long currentNumber;
-    long long result = 0;
+    long long result = 0; 
     long long currentTerm = 0;
 
     //For Storing the previous operation +,-,*,/
@@ -48,7 +48,7 @@ int main(){
     while(expression[index]!='\0'){
 
         //Handling spaces
-        if(isWhitespace(expression[index])){
+        if(isWhitespaceCharacter(expression[index])){
             index++;
             continue;
         }
@@ -70,7 +70,7 @@ int main(){
         }
 
         // Reading a number
-        if(isDigit(expression[index])){
+        if(isDigitCharacter(expression[index])){
 
             // A number cannot come immediately after another number
             if(!expectingNumber){
@@ -80,9 +80,9 @@ int main(){
 
             currentNumber = 0;
 
-            while(isDigit(expression[index])){
-                currentNumber = currentNumber * 10 +
-                                 (expression[index]-'0');
+            while(isDigitCharacter(expression[index])){
+                currentNumber = currentNumber * 10 + 
+                                (expression[index]-'0');
                 index++;
             }
 
@@ -122,7 +122,7 @@ int main(){
         }
 
         //Reading an operator
-        if(isOperator(expression[index])){
+        if(isOperatorCharacter(expression[index])){
 
             if(expectingNumber){
                 printf("Error, Invalid Expression\n");
