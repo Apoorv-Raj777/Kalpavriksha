@@ -14,6 +14,26 @@ struct User
     int age;
 }user;
 
+
+// Input validation 
+int getInteger(){
+    int value;
+
+    // if it successfully reads an integer it will retun 1 and exit loop else will stay in the loop only
+    while(scanf("%d", &value) != 1){
+        printf("Invalid input. Please enter a number: ");
+
+        // clears the buffer before the next input
+        while(getchar() != '\n');
+    }
+
+    // clears the final buffer
+    while(getchar() != '\n');
+
+    return value;
+}
+
+
 bool idExists(int id){
     FILE *file;
     file = fopen(FILE_NAME,"r");
@@ -44,7 +64,13 @@ void createUser(){
     FILE *file;
     
     printf("\nEnter the user id: ");
-    scanf("%d",&user.id);
+    user.id = getInteger();
+
+    // Here we used the input validation as ID cannnot be negative
+    if(user.id <= 0){
+        printf("Error: ID must be greater than 0\n");
+        return;
+    }
 
     if(idExists(user.id)){
         printf("Error: ID already exists\n");
@@ -53,9 +79,16 @@ void createUser(){
 
     printf("\nEnter the user Name: ");
     scanf("%49s",user.name);
+    while(getchar() != '\n');
 
     printf("\nEnter the user Age: ");
-    scanf("%d",&user.age);
+    user.age = getInteger();
+
+    // Here again input validation is done for age as age cannot be less than 0 and more than 150(Immortal)
+    if(user.age < 0 || user.age > 150){
+        printf("Error: Invalid age\n");
+        return;
+    }
 
     // "a" = appends...It adds to the file or create a new file if the file doesn't exist
     file = fopen(FILE_NAME,"a");
@@ -109,7 +142,12 @@ void updateUser(){
     bool found  = false;
 
     printf("Enter the ID to update the record\n");
-    scanf("%d",&id);
+    id = getInteger();
+
+    if(id <= 0){
+        printf("Error. ID must be greater than 0.\n");
+        return;
+    }
 
     // ID must exist
     if(!idExists(id)){
@@ -141,9 +179,18 @@ void updateUser(){
         {
             printf("Enter new Name: ");
             scanf("%49s", user.name);
+            while(getchar() != '\n');
 
             printf("Enter new Age: ");
-            scanf("%d", &user.age);
+            user.age = getInteger();
+
+            if(user.age < 0 || user.age > 150){
+                printf("Error. Invalid age.\n");
+                fclose(file);
+                fclose(temp);
+                remove(TEMP_FILE);
+                return;
+            }
 
             found = true;   
         }
@@ -181,7 +228,12 @@ void deleteUser(){
     bool found  = false;
 
     printf("Enter the ID to update the record\n");
-    scanf("%d",&id);
+    id = getInteger();
+
+    if(id <= 0){
+        printf("Error. ID must be greater than 0.\n");
+        return;
+    }
 
     // ID must exist
     if(!idExists(id)){
@@ -249,7 +301,8 @@ int main(){
         printf("4. Delete User\n");
         printf("5. Exit\n");
 
-        scanf("%d",&choice);
+        choice = getInteger();
+
         switch (choice)
         {
         case 1:
