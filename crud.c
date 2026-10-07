@@ -9,7 +9,7 @@
 //i.e if the id is unique or not
 struct User
 {
-    int id;
+    int id; 
     char name[50];
     int age;
 }user;
@@ -195,7 +195,7 @@ void updateUser(){
             found = true;   
         }
 
-        // Write the record to temporary file. If it was the selected user, the updated    information is written.
+        // Write the record to temporary file. If it was the selected user, the updated information is written.
         
         fprintf(temp, "%d %s %d\n",
                 user.id,
