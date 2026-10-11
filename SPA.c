@@ -134,6 +134,24 @@ int main()
             return 1;
         }
 
+        // checking for extra fields
+        int ch;
+        int extra_input = 0;
+
+        while((ch = getchar()) != '\n' && ch != EOF)
+        {
+            if(ch != ' ' && ch != '\t' && ch != '\r')
+            {
+                extra_input = 1;
+            }
+        }
+
+        if(extra_input)
+        {
+            printf("Invalid input: Too many fields\n");
+            return 1;
+        }
+
         // roll number should be positive
         if(Students[i].roll_no <= 0)
         {
@@ -213,6 +231,7 @@ int main()
                 printf("**\n");
                 break;
         }
+
         // spacing between student records
         printf("\n");
     }
