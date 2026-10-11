@@ -1,10 +1,5 @@
-// Time Complexity O(N)
-// Space Complexity O(N)
-
-// Haven't added many validation checks yet
-
-#include<stdio.h>
-#include<stdbool.h>
+// TC - O(n^2) worst case
+#include <stdio.h>
 
 #define MAX_STUDENTS 100
 
@@ -27,14 +22,14 @@ int calculateTotal(stud student)
 }
 
 
-// To calculate average marks
+// function to calculate average marks
 float calculateAverage(int total)
 {
     return total / 3.0;
 }
 
 
-// Calculating grade
+// function to calculate grade
 char calculateGrade(float average)
 {
     if(average >= 85)
@@ -50,7 +45,45 @@ char calculateGrade(float average)
 }
 
 
-// For printing roll numbers using recursion
+// function to check if roll number already exists
+int rollNumberExists(stud Students[], int current_index, int roll_no)
+{
+    for(int i = 0; i < current_index; i++)
+    {
+        if(Students[i].roll_no == roll_no)
+            return 1;
+    }
+
+    return 0;
+}
+
+
+// function to validate student name
+int isValidName(char name[])
+{
+    int length = 0;
+
+    while(name[length] != '\0')
+    {
+        // checking if character is a letter
+        if(!((name[length] >= 'A' && name[length] <= 'Z') ||
+             (name[length] >= 'a' && name[length] <= 'z')))
+        {
+            return 0;
+        }
+
+        length++;
+    }
+
+    // name should contain at least 3 characters
+    if(length < 3)
+        return 0;
+
+    return 1;
+}
+
+
+// function to print roll numbers using recursion
 void printRollNumbers(stud Students[], int index, int number_of_stud)
 {
     // base condition for recursion
@@ -70,8 +103,14 @@ int main()
 
     int number_of_stud;
 
-    printf("Enter the number of students (MAX 100): ");
-    scanf("%d", &number_of_stud);
+    // reading the number of students
+    printf("Enter the number of students\n");
+    
+    if(scanf("%d", &number_of_stud) != 1)
+    {
+        printf("Invalid input\n");
+        return 1;
+    }
 
     // checking the number of students
     if(number_of_stud < 1 || number_of_stud > MAX_STUDENTS)
@@ -80,18 +119,41 @@ int main()
         return 1;
     }
 
-    printf("\nEnter the details of students:\n");
-    printf("Rollno Name Marks1 Marks2 Marks3\n");
-
-    // taking input for all students
+    // reading input for all students
     for(int i = 0; i < number_of_stud; i++)
     {
-        scanf("%d %49s %d %d %d",
-              &Students[i].roll_no,
-              Students[i].name,
-              &Students[i].marks1,
-              &Students[i].marks2,
-              &Students[i].marks3);
+        // checking if all 5 values are read correctly
+        if(scanf("%d %49s %d %d %d",
+                 &Students[i].roll_no,
+                 Students[i].name,
+                 &Students[i].marks1,
+                 &Students[i].marks2,
+                 &Students[i].marks3) != 5)
+        {
+            printf("Invalid input\n");
+            return 1;
+        }
+
+        // roll number should be positive
+        if(Students[i].roll_no <= 0)
+        {
+            printf("Invalid roll number\n");
+            return 1;
+        }
+
+        // checking if name is valid
+        if(!isValidName(Students[i].name))
+        {
+            printf("Invalid name\n");
+            return 1;
+        }
+
+        // checking for duplicate roll numbers
+        if(rollNumberExists(Students, i, Students[i].roll_no))
+        {
+            printf("Duplicate roll number\n");
+            return 1;
+        }
 
         // checking if marks are within the valid range
         if(Students[i].marks1 < 0 || Students[i].marks1 > 100 ||
@@ -151,7 +213,7 @@ int main()
                 printf("**\n");
                 break;
         }
-
+        // spacing between student records
         printf("\n");
     }
 
