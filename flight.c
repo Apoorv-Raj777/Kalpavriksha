@@ -69,8 +69,8 @@ int readName(char name[], int size)
             return 0;
         }
 
-        // Rejecting a line that was not terminated by a newline
-        if(ch == EOF && length == 0)
+        // Rejecting an empty input
+        if(length == 0)
             return 0;
     }
 
@@ -78,21 +78,21 @@ int readName(char name[], int size)
 }
 
 
-// Function to check for extra input on an integer line
-int hasExtraInput(void)
+// Function to check for unexpected input on the current line
+int hasUnexpectedInput(void)
 {
     int ch;
-    int extra_input = 0;
+    int unexpected_input = 0;
 
     while((ch = getchar()) != '\n' && ch != EOF)
     {
         if(ch != ' ' && ch != '\t' && ch != '\r')
         {
-            extra_input = 1;
+            unexpected_input = 1;
         }
     }
 
-    return extra_input;
+    return unexpected_input;
 }
 
 
@@ -112,7 +112,7 @@ int readInteger(int *value)
         return 0;
     }
 
-    if(hasExtraInput())
+    if(hasUnexpectedInput())
         return 0;
 
     return 1;
