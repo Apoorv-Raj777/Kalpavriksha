@@ -27,6 +27,7 @@ Employee *employee_list = NULL;
 // Function declarations
 Employee *findEmployee(int employee_id);
 int employeeIdExists(int employee_id);
+int ceoExists(void);
 int readInteger(int *value);
 int readLine(char input[], int size);
 int countDirectReports(Employee *employee);
@@ -88,6 +89,22 @@ int readInteger(int *value)
     }
 
     return !extra_input;
+}
+
+// Check whether a CEO already exists
+int ceoExists(void)
+{
+    Employee *current_employee = employee_list;
+
+    while(current_employee != NULL)
+    {
+        if(current_employee->manager == NULL)
+            return 1;
+
+        current_employee = current_employee->next_employee;
+    }
+
+    return 0;
 }
 
 
@@ -269,26 +286,49 @@ void addEmployee(void)
         return;
     }
 
-    printf("Enter Reporting Manager ID (0 for top-level employee): ");
+    printf("Enter Reporting Manager ID (0 for CEO): ");
 
-    if(!readInteger(&manager_id) || manager_id < 0)
+if(!readInteger(&manager_id) || manager_id < 0)
+{
+    printf("Invalid manager ID\n");
+    free(new_employee);
+    return;
+}
+
+if(manager_id == 0)
+{
+    if(ceoExists())
     {
-        printf("Invalid manager ID\n");
+        printf("CEO already exists. Every other employee must have a manager.\n");
         free(new_employee);
         return;
     }
 
-    if(manager_id != 0)
+    if(strcmp(new_employee->designation, "CEO") != 0)
     {
-        manager = findEmployee(manager_id);
-
-        if(manager == NULL)
-        {
-            printf("Reporting manager not found\n");
-            free(new_employee);
-            return;
-        }
+        printf("Only the CEO can be added without a reporting manager.\n");
+        free(new_employee);
+        return;
     }
+}
+else
+{
+    manager = findEmployee(manager_id);
+
+    if(manager == NULL)
+    {
+        printf("Reporting manager not found\n");
+        free(new_employee);
+        return;
+    }
+
+    if(strcmp(new_employee->designation, "CEO") == 0)
+    {
+        printf("The CEO cannot have a reporting manager.\n");
+        free(new_employee);
+        return;
+    }
+}
 
     new_employee->manager = manager;
     new_employee->reports = NULL;
@@ -496,7 +536,7 @@ void freeEmployees(Employee *employee)
 
 int main(void)
 {
-    int menu_choice;
+    int menu_choice = 0;
 
     do
     {
@@ -511,6 +551,7 @@ int main(void)
         if(!readInteger(&menu_choice))
         {
             printf("Invalid menu choice\n");
+            menu_choice = 0;
             continue;
         }
 
